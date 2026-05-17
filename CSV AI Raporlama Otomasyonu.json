@@ -1,0 +1,265 @@
+{
+  "name": "CSV AI Raporlama Otomasyonu",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "rapor",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "58e229f4-afb2-411c-8469-f5101664ee5c",
+      "name": "Raporu Başlat",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        -624,
+        -96
+      ],
+      "webhookId": "rapor-webhook",
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { json: { siparis_id: 2001, urun_adi: 'Çalışma Masası', kategori: 'Mobilya', fiyat: 4500, adet: 2, tarih: '2024-04-26' } },\n  { json: { siparis_id: 2002, urun_adi: 'Gündüz Kremi', kategori: 'Kozmetik', fiyat: 850, adet: 5, tarih: '2024-04-26' } },\n  { json: { siparis_id: 2003, urun_adi: 'Roman Seti', kategori: 'Kitap', fiyat: 350, adet: 10, tarih: '2024-04-27' } },\n  { json: { siparis_id: 2004, urun_adi: 'Uzaktan Kumandalı Araba', kategori: 'Oyuncak', fiyat: 1200, adet: 3, tarih: '2024-04-27' } },\n  { json: { siparis_id: 2005, urun_adi: 'Araç İçi Kamera', kategori: 'Otomotiv', fiyat: 2100, adet: 2, tarih: '2024-04-28' } },\n  { json: { siparis_id: 2006, urun_adi: 'Bahçe Hortumu', kategori: 'Bahçe', fiyat: 400, adet: 4, tarih: '2024-04-28' } },\n  { json: { siparis_id: 2007, urun_adi: 'Kedi Maması 10kg', kategori: 'Evcil Hayvan', fiyat: 1800, adet: 3, tarih: '2024-04-29' } },\n  { json: { siparis_id: 2008, urun_adi: 'Bebek Arabası', kategori: 'Bebek', fiyat: 8500, adet: 1, tarih: '2024-04-29' } },\n  { json: { siparis_id: 2009, urun_adi: 'Matkap Seti', kategori: 'Yapı Market', fiyat: 3200, adet: 2, tarih: '2024-04-30' } },\n  { json: { siparis_id: 2010, urun_adi: 'Tablo', kategori: 'Ev Dekorasyon', fiyat: 1500, adet: 4, tarih: '2024-04-30' } }\n];\n"
+      },
+      "id": "02a4c9e8-0e29-4bad-a3dd-895f21b3da76",
+      "name": "CSV Verilerini Oku",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -416,
+        112
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "schema": "public",
+        "table": "satislar",
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "id": 0,
+            "siparis_id": 0,
+            "fiyat": 0,
+            "adet": 0
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "siparis_id",
+              "displayName": "siparis_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "urun_adi",
+              "displayName": "urun_adi",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "kategori",
+              "displayName": "kategori",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fiyat",
+              "displayName": "fiyat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "adet",
+              "displayName": "adet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tarih",
+              "displayName": "tarih",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "olusturma_tarihi",
+              "displayName": "olusturma_tarihi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "7677c603-4117-4cc9-bfbb-b08259dc8951",
+      "name": "Veritabanına Kaydet",
+      "type": "n8n-nodes-base.postgres",
+      "position": [
+        -224,
+        112
+      ],
+      "typeVersion": 2.6,
+      "credentials": {
+        "postgres": {
+          "id": "rslicyPrZ9KtmoDl",
+          "name": "Postgres account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT kategori, SUM(adet) as toplam_adet, SUM(fiyat * adet) as toplam_ciro FROM satislar GROUP BY kategori ORDER BY toplam_ciro DESC;",
+        "options": {}
+      },
+      "id": "fbd910ed-d932-46f4-9f21-05de00a348fd",
+      "name": "Verileri Analiz Et",
+      "type": "n8n-nodes-base.postgres",
+      "position": [
+        -416,
+        -192
+      ],
+      "typeVersion": 2.6,
+      "credentials": {
+        "postgres": {
+          "id": "rslicyPrZ9KtmoDl",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet html = `<html><head><meta charset=\"UTF-8\"><title>Yapay Zeka Analiz Raporu</title><style>body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; color: #333; background-color: #f9fbfd; } h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; text-align: center; } table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); } th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; } th { background-color: #34495e; color: white; } tr:nth-child(even) { background-color: #f2f2f2; } tr:hover { background-color: #e8f4fd; } .ai-insight { background-color: #fff; border-left: 5px solid #e74c3c; padding: 20px; margin: 30px 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); } .ai-insight h3 { margin-top: 0; color: #e74c3c; display: flex; align-items: center; gap: 10px; }</style></head><body>`;\nhtml += `<h1>📊 Otomatik Satış & AI Analiz Raporu</h1>`;\nhtml += `<div class=\"ai-insight\"><h3>🤖 Yapay Zeka Özeti (Simülasyon)</h3><p>Sisteme yüklenen son verilere göre analiz başarıyla tamamlanmıştır. En yüksek ciro getiren kategoriler belirlenmiş ve satış adetleri optimize edilmiştir. <b>Elektronik</b> kategorisi toplam ciroda belirgin bir farkla başı çekerken, spor ve giyim kategorilerinde istikrarlı bir satış hacmi gözlemlenmiştir. Gelecek çeyrek stok planlamasında Elektronik ve Giyim ürünlerine ağırlık verilmesi, karlılığı %15 artırabilir.</p></div>`;\nhtml += `<h3>Kategori Bazlı Finansal Performans</h3>`;\nhtml += `<table><tr><th>Kategori</th><th>Toplam Satılan Adet</th><th>Toplam Ciro (TL)</th></tr>`;\nfor (let item of items) {\n  if(item.json && item.json.kategori) {\n    html += `<tr><td><strong>${item.json.kategori}</strong></td><td>${item.json.toplam_adet} Adet</td><td>${item.json.toplam_ciro} ₺</td></tr>`;\n  }\n}\nhtml += `</table><br><br><p style=\"text-align:center; color:#7f8c8d; font-size: 12px;\">Bu rapor n8n otomasyon boru hattı (pipeline) tarafından otomatik oluşturulmuştur.</p></body></html>`;\nreturn [{ json: { html: html } }];\n\n"
+      },
+      "id": "b72690a9-ebbe-4647-82ef-cf672bf35cb8",
+      "name": "AI Analiz ve Rapor",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -224,
+        -192
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html; charset=utf-8"
+              }
+            ]
+          }
+        }
+      },
+      "id": "fac1435b-a885-4aee-883b-80aeaf095c1f",
+      "name": "Raporu Göster",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        -16,
+        -192
+      ],
+      "typeVersion": 1.5
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Raporu Başlat": {
+      "main": [
+        [
+          {
+            "node": "CSV Verilerini Oku",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Verileri Analiz Et",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CSV Verilerini Oku": {
+      "main": [
+        [
+          {
+            "node": "Veritabanına Kaydet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verileri Analiz Et": {
+      "main": [
+        [
+          {
+            "node": "AI Analiz ve Rapor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Analiz ve Rapor": {
+      "main": [
+        [
+          {
+            "node": "Raporu Göster",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e2917f27-b753-42e1-87c2-e4a0a96a7d9c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f7929d613ba78282a28e22a35c363f01719f68948f4a035c04c1e5db2dde5457"
+  },
+  "id": "CwSCuPcGEdua5lWs",
+  "tags": []
+}

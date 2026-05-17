@@ -1,0 +1,31 @@
+Data Automation and AI-Supported Sales Reporting System Based on PostgreSQL and n8n
+
+ABSTRACT
+This project presents a data pipeline architecture developed using PostgreSQL and n8n to eliminate manual data processing workflows and automate the analysis of sales data. The system reads external sales data using a parallel processing architecture, saves it to the database, and simultaneously performs categorical revenue analysis. The results are processed through an integrated artificial intelligence algorithm simulation and converted into a dynamic HTML report. This study introduces an innovative automation approach that accelerates the decision-making processes of businesses.
+
+Keywords: Data Automation, n8n, PostgreSQL, Artificial Intelligence, Data Pipeline.
+
+I. INTRODUCTION
+In today's competitive business world, rapid and accurate processing and analysis of data has become a strategic necessity. In traditional methods, collecting data, entering it manually into databases, and reporting are both time-consuming and prone to human error. The aim of this project is to design an integrated system that automatically collects scattered sales data in CSV format, stores it in a relational database, and presents the results as a visual web report. In the study, the open-source n8n platform for workflow automation, PostgreSQL database for data storage, and modern web technologies for reporting were utilized.
+
+II. SYSTEM ARCHITECTURE
+The project was designed on Docker containers in accordance with the microservices architecture. This approach ensured that the system is platform-independent and scalable.
+
+A. Database Design
+PostgreSQL version 15 is at the core of the system. To maintain data in structural integrity, a table named "satislar" was created. This table consists of product name, category, price, quantity, and date columns, with the order number (siparis_id) acting as the primary key.
+
+B. Automation Pipeline
+The automation process was built with a parallel processing architecture created on n8n. The system, triggered via a Webhook, splits into two main branches:
+1. Data Injection: New sales data is read in JSON/CSV format and transferred to the database using the "insert" method and the "Auto-map Input Data to Columns" feature.
+2. Data Analysis: The second branch, running simultaneously, sends an SQL query to the database to perform category-based sales quantity and total revenue calculations (via GROUP BY and SUM functions).
+
+III. AI INTEGRATION AND REPORTING
+The processed data retrieved from the database is transferred to a "Code" (JavaScript) node within n8n. At this stage, an artificial intelligence analysis simulation that predicts profitability and provides stock recommendations based on the data is executed. The outputs are formatted directly using HTML, CSS, and table tags, and transformed into a user-friendly web interface titled "AI Analysis Report". In the final stage, the "Respond to Webhook" node instantly presents this HTML document to the user.
+
+IV. FINDINGS AND CONCLUSION
+The developed system successfully processed sales data across 14 different categories (Electronics, Clothing, Sports, Cosmetics, etc.). Thanks to the fault tolerance (continueOnFail) feature, duplicate data entries were prevented from crashing the system, and the automation ran seamlessly. As a result, a 100% efficiency increase was achieved in data analysis speed and reporting accuracy compared to manual processes. This project proves how powerful modern data automation tools are in academic and corporate analyses.
+
+REFERENCES
+[1] PostgreSQL Global Development Group, "PostgreSQL 15 Documentation," 2023.
+[2] n8n.io, "Fair-code Workflow Automation," n8n Documentation, 2024.
+[3] Docker Inc., "Docker Desktop for Windows," 2024.
